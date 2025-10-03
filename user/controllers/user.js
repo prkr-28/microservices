@@ -62,19 +62,9 @@ module.exports.logoutUser = async (req, res) => {
   }
 };
 
-module.exports.getmydetails = async (req, res) => {
+module.exports.myprofile = async (req, res) => {
   try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.status(401).send({ message: "Unauthorized please register your details." });
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.userId;
-    const user = await userModel.findById(userId);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-    return res.status(200).send({ user });
+    res.send({ user: req.user });
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }

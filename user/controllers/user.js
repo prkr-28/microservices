@@ -24,8 +24,10 @@ module.exports.registerUser = async (req, res) => {
       expiresIn: "1d",
     });
 
+    res.cookie("token", token);
+
     return res.status(201).send({ newUser, token });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    return res.status(500).send({ message: error.message });
   }
 };

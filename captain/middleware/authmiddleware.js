@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
-const userModel = require("../models/usermodel.js");
+const captainModel = require("../models/captainmodel.js");
 const blacklistedTokenModel = require("../models/blacklistedtokens.js");
 
-module.exports.userAuth = async (req, res, next) => {
+module.exports.captainAuth = async (req, res, next) => {
   try {
     const token = req.cookies.token || req.headers.authorization.split(" ")[1];
     if (!token) {
@@ -17,11 +17,11 @@ module.exports.userAuth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userModel.findById(decoded.userId);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
+    const captain = await captainModel.findById(decoded.userId);
+    if (!captain) {
+      return res.status(404).send({ message: "captain not found" });
     }
-    req.user = user;
+    req.captain = captain;
     next();
   } catch (error) {
     return res.status(500).send({ message: error.message });

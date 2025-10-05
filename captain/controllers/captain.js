@@ -1,25 +1,25 @@
-const userModel = require("../models/usermodel.js");
+const captainModel = require("../models/captainmodel.js");
 const blacklistedTokenModel = require("../models/blacklistedtokens.js");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-module.exports.registerUser = async (req, res) => {
+module.exports.registerCaptain = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-      return res.status(400).send({ message: "User already exists" });
+    const existingCaptain = await captainModel.findOne({ email });
+    if (existingCaptain) {
+      return res.status(400).send({ message: "captain already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new userModel({
+    const newCaptain = new captainModel({
       name,
       email,
       password: hashedPassword,
     });
-    await newUser.save();
+    await newCaptain.save();
 
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
@@ -27,34 +27,34 @@ module.exports.registerUser = async (req, res) => {
 
     res.cookie("token", token);
 
-    return res.status(201).send({ newUser, token });
+    return res.status(201).send({ newCaptain, token });
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
 };
 
-module.exports.loginUser = async (req, res) => {
+module.exports.loginCaptain = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.status(400).send({ message: "User does not exist" });
+    const captain = await captainModel.findOne({ email });
+    if (!captain) {
+      return res.status(400).send({ message: "captain does not exist" });
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, captain.password);
     if (!isPasswordValid) {
       return res.status(400).send({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: captain._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.cookie("token", token);
-    return res.status(200).send({ user, token });
+    return res.status(200).send({ captain, token });
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
 };
 
-module.exports.logoutUser = async (req, res) => {
+module.exports.logoutCaptain = async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
@@ -68,9 +68,9 @@ module.exports.logoutUser = async (req, res) => {
   }
 };
 
-module.exports.myprofile = async (req, res) => {
+module.exports.captainProfile = async (req, res) => {
   try {
-    res.send({ user: req.user });
+    res.send({ captain: req.captain });
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }

@@ -3,6 +3,6 @@ const http = require("http");
 
 const server = http.createServer(app);
 
-server.listen(3001, () => {
-  console.log("captain service is running at port 3001");
+server.listen(3002, () => {
+  console.log("captain service is running at port 3002");
 });

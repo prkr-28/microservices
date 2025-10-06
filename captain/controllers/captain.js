@@ -21,7 +21,7 @@ module.exports.registerCaptain = async (req, res) => {
     });
     await newCaptain.save();
 
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: newCaptain._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
